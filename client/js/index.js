@@ -90,6 +90,7 @@ $(function(){
 
     //每次进入首页都需要验证用户是否登录（登录态校验）
     axios.get('user/login').then(result => {
+        console.log('result.cod===',result)
         if (parseFloat(result.code) === 0) {
             //已经登录过，我们需要获取登录用户的基本信息
             return axios.get('user/info');//请求成功走下面的then
@@ -97,13 +98,15 @@ $(function(){
         //请求失败，
         alert('您还没有登录，请先登录',{
             handled:function(){
-                window.location.href = 'login.html';
+               // window.location.href = 'login.html';
             }
         });
         //请求失败，执行reject，不走下面的then，而走catch，catch什么也不做可以不写
         return Promise.reject();
     }).then(result=>{
         //走到这里，已经从服务器获取到用户信息了
+        console.log("result2= " ,result)
+
         if(result.code===0){
             let data = result.data;
             $spanName.html('您好，'+data.name)

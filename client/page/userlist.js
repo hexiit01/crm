@@ -32,17 +32,19 @@ let userListModel = (function(){
             }
         }).then(result=>{
             //数据处理
-            console.log('result==',result)
-            let{code,data} = result;
+            console.log('resulttt==',result)
+            let{code,codeText,data} = result;
+            console.log("parseFloat(code)===",parseFloat(code),parseFloat(code)===0,data)
             if(parseFloat(code) === 0){
-                return data;
+                return Promise.resolve(data);
             }
             return Promise.reject();
         }).then(data =>{
             //数据渲染
             let str = ``;
             data.forEach(item=>{
-                str+=`<tr>
+                //data-id   data-name 自定义属性，方便之后 点击修改 和删除的操作获取id和name
+                str+=`<tr data-id='${item.id} data-name='${item.name}''>
                    ${power.includes('userhandle')?
                     '<td class="w3"><input type="checkbox"></td>':''}
                     <td class="w10">${item.name}</td>
@@ -65,8 +67,8 @@ let userListModel = (function(){
             })
             $tbody.html(str);
 
-        }).catch(()=>{
-            $tbody.html('');
+        }).catch((msg)=>{
+            $tbody.html(msg);
         });
  
 
@@ -97,6 +99,36 @@ let userListModel = (function(){
         })
     }
 
+    //基于事件委托处理员工的相关操作
+    let handleDelegate = function(){
+        $tbody.click(function (ev){
+            let target = ev.target,
+                tarTag = target.tagName,  //获得标签名 大写
+                tarVal = target.innerText,  //获得标签中的内容
+                $target = $(target); //转为jquery 对象
+            //重置密码
+            if(tarTag==='A' && tarVal ==='重置密码'){
+                //从自定义属性中获取id
+                let $grandpa =  $target.parent().parent(),
+                   userId = $grandpa.attr('data-id'),
+                   username= $grandpa.attr('data-name');
+                console.log('pgrandpa==',$grandpa.tagName)
+                alert(`确定要把${username}的密码重置么？`,{
+                    title:'警告！警告！',
+                    confirm:true,
+                    handled:msg=>{
+                        if(msg ==='CONFIRM'){
+                            //用户点击的是确定
+                        }
+                    }
+                })
+                
+                return;
+            }
+
+        })
+    };
+
 
     return{
         init(){
@@ -105,6 +137,7 @@ let userListModel = (function(){
                 render();
             })
             handleFilter();
+            handleDelegate();
         }
     }
 })()
