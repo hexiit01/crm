@@ -1,11 +1,71 @@
 //在所有的权限之前，我们可以先做权限校验
-
+//权限校验，最好不是控制元素的显示隐藏，而是真正的控制元素有或者没有
 $(function(){
+    //获得权限标识//需要用decodeURIConent解密
+    let power = localStorage.getItem('power');
+    power = encodeURIComponent(power);
+    if(!power){
+        alert('当前操作无效请重新登录！',
+        {
+            handled:()=>{
+                window.location.href = 'login.html';
+            }
+        });
+    }
+    console.log('power==',power)
+    let str  = `	<div class="itemBox">
+            <h3>
+                <i class="iconfont icon-yuangong"></i>
+                员工管理
+            </h3>
+            <nav class="item">
+                <a href="page/userlist.html" target="_iframe">员工列表</a>
+                ${power.includes('userhandle')?
+                     `<a href="page/useradd.html" target="_iframe">新增员工</a>`:``}
 
+            </nav>
+        </div>
+        <div class="itemBox">
+            <h3>
+                <i class="iconfont icon-guanliyuan"></i>
+                部门管理
+            </h3>
+            <nav class="item">
+                <a href="page/departmentlist.html" target="_iframe">部门列表</a>
+               ${power.includes('departhandle')?`<a href="page/departmentadd.html" target="_iframe">新增部门</a>`:``} 
+            </nav>
+        </div>
+        <div class="itemBox">
+            ${power.includes('jobhandle')?`
+                <h3>
+                    <i class="iconfont icon-zhiwuguanli"></i>
+                    职务管理
+                </h3>
+                <nav class="item">
+                    <a href="page/joblist.html" target="_iframe">职务列表</a>
+                    <a href="page/jobadd.html" target="_iframe">新增职务</a>
+                </nav>
+            `:``}
+        </div>
+        <div class="itemBox">
+            <h3>
+                <i class="iconfont icon-kehuguanli"></i>
+                客户管理
+            </h3>
+            <nav class="item">
+            
+                <a href="page/customerlist.html" target="_iframe">我的客户</a>
+                ${power.includes('departcustomer')||power.includes('allcustomer')?`
+                <a href="page/customerlist.html" target="_iframe">全部客户</a>`:``}
+                
+                <a href="page/customeradd.html" target="_iframe">新增客户</a>
+            </nav>
+        </div>`;
+        $('.menuBox').html(str);
 });
 
 
-
+//首页的正常业务处理
 $(function(){ 
     let $header = $('headerBox');
      let   $baseBox = $('.baseBox');
@@ -16,15 +76,10 @@ $(function(){
         $menuBox = $('.menuBox'),
         $itemBox = $menuBox.find('.itemBox'),
         $navList = $('.navBox a'),
-        $iframeBox = $('.iframeBox'),
-        $btn = $('#btn');
+        $iframeBox = $('.iframeBox');
    
     //动态计算出container区域的高度
     function computed(){
-        console.log("22232323",$baseBox)
-        console.log("22232323",$spanName)
-        console.log($spanName.val())
-        
         $spanName.val(44)
         let winH = $(window).height();
         $container.css('height',winH-$header.outerHeight()-$footer.outerHeight()); 
@@ -55,12 +110,6 @@ $(function(){
         }
     });
 
-    $btn.on("click",function(){
-        console.log("ddd");
-    })
-    // $baseBox.click(function(){
-    //     console.log("ddd");
-    // })
     //安全退出
     $signoutBtn.click(function(){
 
