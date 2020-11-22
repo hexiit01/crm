@@ -135,6 +135,7 @@ route.get('/list', (req, res) => {
 	} = req.query;
 	if (search !== '') {
 		data = data.filter(item => {
+			
 			return item.name.includes(search) || item.phone.includes(search) || item.email.includes(search) || item.QQ.includes(search) || item.weixin.includes(search);
 		});
 	}

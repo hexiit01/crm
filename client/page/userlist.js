@@ -44,7 +44,7 @@ let userListModel = (function(){
             let str = ``;
             data.forEach(item=>{
                 //data-id   data-name 自定义属性，方便之后 点击修改 和删除的操作获取id和name
-                str+=`<tr data-id='${item.id} data-name='${item.name}''>
+                str+=`<tr data-id=${item.id} data-name=${item.name}>
                    ${power.includes('userhandle')?
                     '<td class="w3"><input type="checkbox"></td>':''}
                     <td class="w10">${item.name}</td>
@@ -56,7 +56,7 @@ let userListModel = (function(){
                     <td class="w20">${item.desc}</td>
                     ${power.includes('userhandle')?`
                         <td class="w12">
-                            <a href="javascript:;">编辑</a>
+                            <a href="useradd.html?userId=${item.id}">编辑</a>
                             <a href="javascript:;">删除</a>
                             ${power.includes('resetpassword')?
                                `<a href="javascript:;">重置密码</a>`:``}
@@ -112,7 +112,6 @@ let userListModel = (function(){
                 let $grandpa =  $target.parent().parent(),
                    userId = $grandpa.attr('data-id'),
                    username= $grandpa.attr('data-name');
-                console.log('pgrandpa==',$grandpa.tagName)
                 alert(`确定要把${username}的密码重置么？`,{
                     title:'警告！警告！',
                     confirm:true,
